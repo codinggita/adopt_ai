@@ -1,4 +1,6 @@
 import express from 'express';
+import authRoutes from './auth.routes.js';
+
 const router = express.Router();
 
 // Health check API
@@ -9,5 +11,7 @@ router.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+router.use('/auth', authRoutes);
 
 export default router;
