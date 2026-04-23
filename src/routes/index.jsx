@@ -1,10 +1,14 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from '../pages/Login.jsx';
+import Register from '../pages/Register.jsx';
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<div><h1>Adopt AI</h1><p>Welcome to the platform.</p></div>} />
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="*" element={<div>404 Not Found</div>} />
     </Routes>
   );

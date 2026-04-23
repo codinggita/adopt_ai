@@ -1,12 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import routes from './routes/index.js';
-import connectDB from './config/db.js';
 
 const app = express();
-
-// Connect to Database
-connectDB();
 
 // Middleware
 app.use(cors());
