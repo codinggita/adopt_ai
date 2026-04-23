@@ -2,6 +2,7 @@
 
 AdOpt AI is a full-stack MERN SaaS platform that helps small businesses optimize their digital advertising campaigns using AI-driven insights and analytics.
 
+deploy link :https://adopt-ai-ten.vercel.app/
 ---
 
 ## 📌 Problem
