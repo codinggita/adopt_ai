@@ -1,6 +1,7 @@
 import express from 'express';
 import authRoutes from './auth.routes.js';
 import campaignRoutes from './campaign.routes.js';
+import aiRoutes from './ai.routes.js';
 
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.get('/health', (req, res) => {
 
 router.use('/auth', authRoutes);
 router.use('/campaigns', campaignRoutes);
+router.use('/ai', aiRoutes);
 
 export default router;
