@@ -1,13 +1,17 @@
 import express from 'express';
-import { createCampaign, getCampaigns } from '../controllers/campaign.controller.js';
+import { createCampaign, getCampaigns, updateCampaign, deleteCampaign } from '../controllers/campaign.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-router.use(protect); // All campaign routes are protected
+router.use(protect);
 
 router.route('/')
   .post(createCampaign)
   .get(getCampaigns);
+
+router.route('/:id')
+  .put(updateCampaign)
+  .delete(deleteCampaign);
 
 export default router;

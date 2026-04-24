@@ -47,3 +47,56 @@ export const getCampaigns = async (req, res) => {
     });
   }
 };
+
+// @desc    Update a campaign
+// @route   PUT /api/campaigns/:id
+// @access  Private
+export const updateCampaign = async (req, res) => {
+  try {
+    const campaign = await Campaign.findOneAndUpdate(
+      { _id: req.params.id, user: req.user._id },
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!campaign) {
+      return res.status(404).json({ message: 'Campaign not found' });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: campaign
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message
+    });
+  }
+};
+
+// @desc    Delete a campaign
+// @route   DELETE /api/campaigns/:id
+// @access  Private
+export const deleteCampaign = async (req, res) => {
+  try {
+    const campaign = await Campaign.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user._id
+    });
+
+    if (!campaign) {
+      return res.status(404).json({ message: 'Campaign not found' });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: null
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message
+    });
+  }
+};

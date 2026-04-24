@@ -1,8 +1,10 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Target, Lightbulb, Users, Settings, Plus, Sparkles } from 'lucide-react';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
@@ -40,7 +42,7 @@ const Sidebar = () => {
           <Settings size={18} />
           <span>Settings</span>
         </NavLink>
-        <button className="btn-new-campaign">
+        <button className="btn-new-campaign" onClick={() => navigate('/campaigns?create=true')}>
           <Plus size={16} />
           <span>New Campaign</span>
         </button>
@@ -50,3 +52,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
