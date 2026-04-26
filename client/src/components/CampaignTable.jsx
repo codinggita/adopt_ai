@@ -1,5 +1,6 @@
 import React from 'react';
 import { Edit2, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const CampaignTable = ({ campaigns, onEdit, onDelete }) => {
   const getStatusClass = (status) => {
@@ -26,7 +27,9 @@ const CampaignTable = ({ campaigns, onEdit, onDelete }) => {
             <tr key={camp._id}>
               <td>
                 <div className="campaign-name-cell">
-                  <div className="camp-title">{camp.name}</div>
+                  <Link to={`/campaigns/${camp._id}`} className="camp-title-link">
+                    <div className="camp-title">{camp.name}</div>
+                  </Link>
                 </div>
               </td>
               <td>${camp.dailyBudget?.toLocaleString()}</td>

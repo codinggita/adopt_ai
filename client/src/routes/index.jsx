@@ -9,6 +9,7 @@ import Dashboard from '../pages/Dashboard.jsx';
 import CampaignList from '../pages/CampaignList.jsx';
 
 import Insights from '../pages/Insights.jsx';
+import CampaignDetail from '../pages/CampaignDetail.jsx';
 
 const AppRoutes = () => {
   return (
@@ -33,6 +34,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <CampaignList />
+            </DashboardLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/campaigns/:id"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <CampaignDetail />
             </DashboardLayout>
           </ProtectedRoute>
         }

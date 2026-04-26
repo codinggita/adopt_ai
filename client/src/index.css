@@ -971,6 +971,21 @@ body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.camp-title-link {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s;
+}
+
+.camp-title-link:hover {
+  opacity: 0.8;
+}
+
+.campaign-name-cell .camp-title {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
 .mobile-navbar-logo {
   font-weight: 700;
   color: var(--text-main);
