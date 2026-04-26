@@ -1,4 +1,4 @@
-import openai from '../utils/openai.js';
+import grok from '../utils/grok.js';
 
 /**
  * Build a system prompt that instructs GPT to act as an ad-campaign
@@ -46,9 +46,9 @@ export const generateInsights = async (campaigns) => {
 
   const userMessage = `Here is my current campaign portfolio:\n${JSON.stringify(campaignSummary, null, 2)}\n\nAnalyze this data and provide optimization insights.`;
 
-  const model = 'gpt-4o-mini';
+  const model = 'grok-beta';
 
-  const completion = await openai.chat.completions.create({
+  const completion = await grok.chat.completions.create({
     model,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },

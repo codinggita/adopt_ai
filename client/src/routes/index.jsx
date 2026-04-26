@@ -8,6 +8,8 @@ import DashboardLayout from '../layout/DashboardLayout.jsx';
 import Dashboard from '../pages/Dashboard.jsx';
 import CampaignList from '../pages/CampaignList.jsx';
 
+import Insights from '../pages/Insights.jsx';
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -35,8 +37,18 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/insights" element={<ProtectedRoute><DashboardLayout><div style={{padding: '2rem'}}>Insights</div></DashboardLayout></ProtectedRoute>} />
+      <Route 
+        path="/insights" 
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <Insights />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } 
+      />
       <Route path="/audiences" element={<ProtectedRoute><DashboardLayout><div style={{padding: '2rem'}}>Audiences</div></DashboardLayout></ProtectedRoute>} />
+
       
       <Route path="*" element={<div style={{ padding: '4rem', textAlign: 'center' }}>404 Not Found</div>} />
     </Routes>
