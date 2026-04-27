@@ -2,47 +2,39 @@ import React from 'react';
 import { Wallet, Eye, MousePointerClick, Activity, CheckCircle2 } from 'lucide-react';
 import KpiCard from './KpiCard';
 
-const kpiData = [
-  {
-    id: 1,
-    title: 'Total Spend',
-    icon: Wallet,
-    value: '$42,850',
-    trend: { type: 'positive', value: '12.5%' }
-  },
-  {
-    id: 2,
-    title: 'Impressions',
-    icon: Eye,
-    value: '4.2M',
-    trend: { type: 'positive', value: '8.1%' }
-  },
-  {
-    id: 3,
-    title: 'Clicks',
-    icon: MousePointerClick,
-    value: '125.4K',
-    trend: { type: 'positive', value: '14.2%' }
-  },
-  {
-    id: 4,
-    title: 'ROAS',
-    icon: Wallet,
-    labelIcon: Activity,
-    value: '4.8x',
-    trend: { type: 'positive', value: '22.4%' },
-    isHighlight: true
-  },
-  {
-    id: 5,
-    title: 'Conversions',
-    icon: CheckCircle2,
-    value: '8,240',
-    trend: { type: 'neutral', value: '0.5%' }
-  }
-];
+const KpiGrid = ({ totals, avgCtr }) => {
+  const kpiData = [
+    {
+      id: 1,
+      title: 'Total Spend',
+      icon: Wallet,
+      value: totals ? `$${totals.spend.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : '$0',
+      trend: { type: 'positive', value: 'Live' }
+    },
+    {
+      id: 2,
+      title: 'Impressions',
+      icon: Eye,
+      value: totals ? (totals.impressions > 1000000 ? `${(totals.impressions / 1000000).toFixed(1)}M` : totals.impressions.toLocaleString()) : '0',
+      trend: { type: 'positive', value: 'Live' }
+    },
+    {
+      id: 3,
+      title: 'Clicks',
+      icon: MousePointerClick,
+      value: totals ? (totals.clicks > 1000 ? `${(totals.clicks / 1000).toFixed(1)}K` : totals.clicks.toLocaleString()) : '0',
+      trend: { type: 'positive', value: 'Live' }
+    },
+    {
+      id: 4,
+      title: 'Avg. CTR',
+      icon: Activity,
+      value: `${avgCtr}%`,
+      trend: { type: 'positive', value: 'Live' },
+      isHighlight: true
+    }
+  ];
 
-const KpiGrid = () => {
   return (
     <div className="kpi-grid">
       {kpiData.map((kpi) => (

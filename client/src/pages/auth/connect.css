@@ -1,0 +1,118 @@
+.connect-page {
+  padding: 3rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.connect-header {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.connect-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.connect-header p {
+  color: var(--text-muted);
+}
+
+.connect-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.connect-card {
+  background: #1a1a24;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  transition: all 0.2s;
+}
+
+.connect-card:hover {
+  border-color: rgba(124, 58, 237, 0.2);
+  transform: translateY(-2px);
+}
+
+.connect-card.connected {
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.connect-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.provider-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.provider-icon.google {
+  background: #4285f4;
+  color: white;
+}
+
+.provider-icon.meta {
+  background: #0668e1;
+  color: white;
+}
+
+.provider-details h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.provider-details p {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.btn-connect {
+  width: 100%;
+  padding: 0.875rem;
+  border-radius: 0.5rem;
+  background: var(--primary-purple);
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-connect:hover {
+  background: var(--primary-purple-hover);
+}
+
+.btn-connect:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-disconnect {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+.btn-disconnect:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: var(--error-red);
+}

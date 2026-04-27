@@ -1,34 +1,85 @@
 import Campaign from '../models/Campaign.js';
 import Insight from '../models/Insight.js';
-import { generateInsights } from '../services/ai.service.js';
+import { generateAIResponse, generateInsights } from '../services/ai.service.js';
+import { fetchGoogleMetrics } from '../services/googleAds.service.js';
+import { fetchMetaMetrics } from '../services/metaAds.service.js';
 
-// @desc    Generate AI insights from the user's campaign data
+// @desc    AI Chat — send a message, get a reply
+// @route   POST /api/ai/chat
+// @access  Private
+export const chatHandler = async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({
+        success: false,
+        error: 'Message is required',
+      });
+    }
+
+    const reply = await generateAIResponse(message);
+
+    res.status(200).json({
+      success: true,
+      reply,
+    });
+  } catch (error) {
+    console.error('AI Chat Error:', error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate AI response',
+    });
+  }
+};
+
+// @desc    Generate AI insights from real-time campaign data
 // @route   POST /api/ai/generate
 // @access  Private
 export const generateAIInsights = async (req, res) => {
   try {
-    // Optional: scope to a single campaign via body
-    const { campaignId } = req.body;
+    const userId = req.user._id;
 
-    const query = { user: req.user._id };
-    if (campaignId) query._id = campaignId;
+    // Fetch real-time data from both platforms + manual campaigns
+    const [googleData, metaData, manualCampaigns] = await Promise.all([
+      fetchGoogleMetrics(userId),
+      fetchMetaMetrics(userId),
+      Campaign.find({ user: userId })
+    ]);
 
-    const campaigns = await Campaign.find(query);
+    const campaigns = [];
+    if (googleData) campaigns.push(...googleData);
+    if (metaData) campaigns.push(...metaData);
 
-    if (campaigns.length === 0) {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'No campaigns found. Create campaigns before generating insights.',
+    // Add manual campaigns from DB
+    if (manualCampaigns && manualCampaigns.length > 0) {
+      manualCampaigns.forEach(c => {
+        campaigns.push({
+          campaignName: c.name,
+          platform: 'Manual',
+          spend: c.spend || 0,
+          clicks: Math.floor((c.spend || 0) / 1.5),
+          impressions: Math.floor((c.spend || 0) * 50),
+          ctr: 1.2,
+          status: c.status
+        });
       });
     }
 
-    // Call OpenAI through the service layer
+    // Fallback sample data for demo
+    if (campaigns.length === 0) {
+      campaigns.push(
+        { campaignName: 'Sample Search Campaign', platform: 'Google', spend: 250, clicks: 120, impressions: 4500, ctr: 2.6, status: 'Enabled' },
+        { campaignName: 'Sample Social Campaign', platform: 'Meta', spend: 180, clicks: 95, impressions: 8000, ctr: 1.1, status: 'Active' }
+      );
+    }
+
+    // Call Groq through the service layer
     const { insight, tokensUsed, model } = await generateInsights(campaigns);
 
     // Persist the insight
     const saved = await Insight.create({
-      user: req.user._id,
-      campaign: campaignId || null,
+      user: userId,
       type: insight.type || 'general',
       title: insight.title,
       summary: insight.summary,
@@ -36,13 +87,7 @@ export const generateAIInsights = async (req, res) => {
       metadata: {
         model,
         tokensUsed,
-        campaignSnapshot: campaigns.map((c) => ({
-          name: c.name,
-          status: c.status,
-          dailyBudget: c.dailyBudget,
-          spend: c.spend,
-          roas: c.roas,
-        })),
+        campaignSnapshot: campaigns,
       },
     });
 

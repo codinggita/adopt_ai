@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  chatHandler,
   generateAIInsights,
   getInsights,
   getInsightById,
@@ -11,6 +12,9 @@ const router = express.Router();
 
 // All AI routes are protected
 router.use(protect);
+
+// POST /api/ai/chat — Groq AI chat
+router.post('/chat', chatHandler);
 
 // POST /api/ai/generate — generate new AI insights
 router.post('/generate', generateAIInsights);

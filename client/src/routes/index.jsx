@@ -12,6 +12,7 @@ import Insights from '../pages/Insights.jsx';
 import CampaignDetail from '../pages/CampaignDetail.jsx';
 import AudienceDashboard from '../pages/audience/AudienceDashboard.jsx';
 import ImportCSV from '../pages/campaign/ImportCSV.jsx';
+import ConnectAccounts from '../pages/auth/ConnectAccounts.jsx';
 
 const AppRoutes = () => {
   return (
@@ -76,6 +77,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <DashboardLayout>
               <AudienceDashboard />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/settings/connect" 
+        element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ConnectAccounts />
             </DashboardLayout>
           </ProtectedRoute>
         } 

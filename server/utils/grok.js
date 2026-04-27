@@ -28,8 +28,9 @@ const grok = {
           );
           return response.data;
         } catch (error) {
-          console.error('Grok API Error:', error.response?.data || error.message);
-          throw new Error('AI service unavailable');
+          const errMsg = error.response?.data?.error?.message || error.response?.data?.message || error.message;
+          console.error('Grok API Error Details:', JSON.stringify(error.response?.data || {}, null, 2));
+          throw new Error(`AI service unavailable: ${errMsg}`);
         }
       },
     },

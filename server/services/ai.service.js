@@ -1,10 +1,41 @@
-import grok from '../utils/grok.js';
+import Groq from 'groq-sdk';
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+const MODEL = 'llama-3.3-70b-versatile';
 
 /**
- * Build a system prompt that instructs GPT to act as an ad-campaign
- * optimization expert and return structured JSON.
+ * Generate a chat response from Groq AI.
+ *
+ * @param {string} message - The user's message
+ * @returns {string} AI text response
  */
-const SYSTEM_PROMPT = `You are an expert digital advertising strategist for the AdOpt AI platform.
+export const generateAIResponse = async (message) => {
+  const completion = await groq.chat.completions.create({
+    model: MODEL,
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a helpful AI assistant for marketing campaigns',
+      },
+      {
+        role: 'user',
+        content: message,
+      },
+    ],
+    temperature: 0.7,
+    max_tokens: 1024,
+  });
+
+  return completion.choices[0].message.content;
+};
+
+/**
+ * System prompt for structured campaign insight generation.
+ */
+const INSIGHTS_SYSTEM_PROMPT = `You are an expert digital advertising strategist for the AdOpt AI platform.
 Analyze the provided campaign data and return actionable insights as valid JSON.
 
 Return EXACTLY this JSON structure (no markdown, no code fences):
@@ -25,47 +56,53 @@ Rules:
 - Provide 2-5 recommendations per analysis
 - Base priority on potential ROI impact
 - Be specific — reference actual numbers from the data
-- If ROAS < 1, flag it as high-priority concern
-- If spend exceeds daily budget, flag overspend
-- If status is "Learning", suggest patience or small tweaks only`;
+- If CTR < 1%, flag it as high-priority concern
+- If spend is high with low clicks, flag inefficiency`;
 
 /**
- * Generates AI insights for the given campaign data.
+ * Generate structured AI insights for campaign data.
  *
- * @param {Array} campaigns - Array of campaign documents from MongoDB
+ * @param {Array} campaigns - Array of campaign metric objects
  * @returns {{ insight: object, tokensUsed: number, model: string }}
  */
 export const generateInsights = async (campaigns) => {
   const campaignSummary = campaigns.map((c) => ({
-    name: c.name,
-    status: c.status,
-    dailyBudget: c.dailyBudget,
+    name: c.campaignName,
+    platform: c.platform,
     spend: c.spend,
-    roas: c.roas,
+    clicks: c.clicks,
+    impressions: c.impressions,
+    ctr: c.ctr,
+    status: c.status,
   }));
 
-  const userMessage = `Here is my current campaign portfolio:\n${JSON.stringify(campaignSummary, null, 2)}\n\nAnalyze this data and provide optimization insights.`;
+  const userMessage = `Here is my real-time campaign performance data from multiple platforms:\n${JSON.stringify(campaignSummary, null, 2)}\n\nAnalyze this data and provide 3-5 specific optimization insights. Reference actual numbers.`;
 
-  const model = 'grok-beta';
-
-  const completion = await grok.chat.completions.create({
-    model,
+  const completion = await groq.chat.completions.create({
+    model: MODEL,
     messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'system', content: INSIGHTS_SYSTEM_PROMPT },
       { role: 'user', content: userMessage },
     ],
     temperature: 0.7,
     max_tokens: 1024,
-    response_format: { type: 'json_object' },
   });
 
   const choice = completion.choices[0];
   const tokensUsed = completion.usage?.total_tokens || 0;
-  const parsed = JSON.parse(choice.message.content);
+
+  // Clean up content in case of markdown fences
+  let content = choice.message.content;
+  if (content.includes('```')) {
+    content = content.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+  }
+  content = content.trim();
+
+  const parsed = JSON.parse(content);
 
   return {
     insight: parsed,
     tokensUsed,
-    model,
+    model: MODEL,
   };
 };
